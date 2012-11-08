@@ -54,16 +54,32 @@ class Less
 		
 		foreach($stylesheets as &$lessfile)
 		{
-			$source_less  = \Config::get('less.source_dir').$lessfile;
-			
-			if( ! is_file($source_less))
+			// Normalize the $source_less config value to be an array, as it's optional
+			$source_dir = \Config::get('less.source_dir');
+			if (!is_array($source_dir))
 			{
-				throw new \LessException('Could not find less source file: '.$source_less);
+				$source_dir = array($source_dir);
+			}
+			
+			// Iterate through the directories looking for this file
+			foreach ($source_dir as $one_source_dir)
+			{
+				$source_less = $one_source_dir.$lessfile;
+				if( is_file($source_less))
+				{
+					break;
+				}
+				$source_less = '';
+			}
+			// If we didn't find it, throw an exception
+			if ($source_less === '')
+			{
+				throw new \LessException('Could not find less source file: '.$lessfile);
 			}
 			
 			// Change the name for loading with Asset::css
 			$lessfile = str_replace('.'.pathinfo($lessfile, PATHINFO_EXTENSION), '', $lessfile).'.css';
-
+			
 			$output_dir = \Config::get('less.output_dir');
 			
 			if (\Config::get('less.keep_dir', true)) {
@@ -84,11 +100,11 @@ class Less
 				
 				$compile_path = dirname($compiled_css);
 				$css_name     = pathinfo($compiled_css, PATHINFO_BASENAME);
-
+				
 				\File::update($compile_path, $css_name, $handle->parse());
 			}
 		}
-
+		
 		return $stylesheets;
 	}
 	
