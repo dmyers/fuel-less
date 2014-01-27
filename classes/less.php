@@ -93,7 +93,7 @@ class Less
 			// Compile only if source is newer than compiled file
 			if ( ! is_file($compiled_css) or filemtime($source_less) > filemtime($compiled_css))
 			{
-				require_once PKGPATH.'less'.DS.'vendor'.DS.'lessphp'.DS.'lessc.inc.php';
+				require_once PKGPATH.'less'.DS.'vendor'.DS.'leafo'.DS.'lessphp'.DS.'lessc.inc.php';
 				
 				$handle = new \lessc($source_less);
 				$handle->indentChar = \Config::get('asset.indent_with');
