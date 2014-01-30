@@ -48,3 +48,5 @@ As lessphp is a submodule, update it simply doing
 Fuel LessCSS package is released under the MIT License.
 
 Have fun!
+
+(I should stop using submodules)
